@@ -1,5 +1,5 @@
 /*Ejercicio 3*/
-/*Obtener el nombre del item e ingrediente que se usan una cantidad menor a 6.  items.name as nameItem, ingredients.name as nameIngredient*/
+/*Obtener el nombre del item e ingrediente que se usan una cantidad menor a 6. */
 
 use restaurant; 
 

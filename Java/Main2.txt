@@ -1,0 +1,46 @@
+import java.sql.SQLException;
+import java.util.ArrayList;
+
+import restaurantExamenFinal.Conector2;
+
+public class Main2 {
+
+	public static void main(String[] args) {
+		Conector2 instancia = Conector2.getInstancia();
+		try {
+			ArrayList<String>nomYdesc = instancia.getnombreYmenordecuento();
+			System.out.println("----------------");
+			System.out.println("Ejercicio 1: ");
+			for(String listnomYdesc:nomYdesc) {
+				System.out.println(listnomYdesc);
+			}
+			System.out.println("----------------");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		try {
+			ArrayList<String>numOr = instancia.contOrders();
+			System.out.println("Ejercicio 2: ");
+			for(String countOr:numOr) {
+				System.out.println(countOr);
+			}
+			System.out.println("----------------");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		try {
+			ArrayList<String>nombreitemingre = instancia.listItemAndIngredient();
+			System.out.println("Ejercicio 3: ");
+			for(String namei2:nombreitemingre) {
+				System.out.println(namei2);
+			}
+			System.out.println("----------------");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+	}
+
+}

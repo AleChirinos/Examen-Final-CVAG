@@ -1,0 +1,93 @@
+package restaurantExamenFinal;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+
+import restaurantExamenFinal.Conector2;
+
+public class Conector2 {
+	private static Connection con;
+	private static Conector2 INSTANCE =null;
+	
+	private Conector2(){
+		
+	}
+	
+	private synchronized static void crearInstancia() {
+		if (INSTANCE == null) {
+			INSTANCE = new Conector2(); 
+			crearConexion();
+		}
+	}
+	
+	public static Conector2 getInstancia() {
+		if (INSTANCE == null) {
+			crearInstancia(); 
+		}
+		return INSTANCE;
+	}
+	
+	private static void crearConexion() {
+		String host = "127.0.0.1";
+		String user = "root";
+		String password = "alegachiva";
+		String dataBase = "restaurant";
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			String urlConexion = "jdbc:mysql://"+host+"/"+dataBase+"?user="+user+"&password="+password;
+			con = DriverManager.getConnection(urlConexion);
+			System.out.println("Lo lograste <3");
+		}catch(Exception e) {
+			System.out.println("Error al conectar a la base de datos");
+			System.out.println(e);
+		}
+	}
+	
+	public ArrayList<String> getnombreYmenordecuento() throws SQLException {
+		ArrayList<String> nomYmenDesc = new ArrayList<String>();
+		PreparedStatement ps = con.prepareStatement("select name, min(discount) as menorDescuento\r\n" + 
+				"from meals \r\n" + 
+				"inner join partof on meals.mealid = partof.mealid");
+		ResultSet rs = ps.executeQuery();
+		while (rs.next()) {
+			nomYmenDesc.add(rs.getString("name"));
+			nomYmenDesc.add(rs.getString("menorDescuento"));
+		}
+		rs.close();
+		return nomYmenDesc;
+	}
+	
+	public ArrayList<String> contOrders() throws SQLException {
+		ArrayList<String> numOrdenes = new ArrayList<String>();
+		PreparedStatement ps = con.prepareStatement("select count(ordernumber) as numeroDeOrdenes from orders \r\n" + 
+				"inner join stores on stores.storeid = orders.storeid\r\n" + 
+				"where address = '1111 Main St.';");
+		ResultSet rs = ps.executeQuery();
+		while (rs.next()) {
+			numOrdenes.add(rs.getString("numeroDeOrdenes"));
+		}
+		rs.close();
+		return numOrdenes;
+	}
+	
+	public ArrayList<String> listItemAndIngredient() throws SQLException {
+		ArrayList<String> nameofItIn = new ArrayList<String>();
+		PreparedStatement ps = con.prepareStatement("select  distinct items.name as nameItem, ingredients.name as nameIngredient\r\n" + 
+				"from items \r\n" + 
+				"inner join madewith on items.itemid = madewith.itemid\r\n" + 
+				"inner join ingredients on madewith.ingredientid = ingredients.ingredientid\r\n" + 
+				"where quantity<6;");
+		ResultSet rs = ps.executeQuery();
+		while (rs.next()) {
+			nameofItIn.add(rs.getString("nameItem"));
+			nameofItIn.add(rs.getString("nameIngredient"));
+		}
+		rs.close();
+		return nameofItIn;
+	}
+
+}
